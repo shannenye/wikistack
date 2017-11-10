@@ -3,6 +3,8 @@ const app = express();
 const nunjucks = require('nunjucks');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const path = require('path');
+
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extend: true}));
@@ -15,5 +17,9 @@ var env = nunjucks.configure('views', {noCache: true});
 app.set('view engine', 'html');
 // when res.render works with html files, have it use nunjucks to do so
 app.engine('html', nunjucks.render);
+
+app.use(express.static(path.join(__dirname, '/public')));
+
+// app.get('/public/stylesheets/style.css')
 
 app.listen(3000, () => {console.log('Listening on 3000')});
