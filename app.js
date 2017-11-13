@@ -4,7 +4,8 @@ const nunjucks = require('nunjucks');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const path = require('path');
-
+const models = require('./models');
+const routes = require('./routes/index.js');
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extend: true}));
@@ -20,6 +21,12 @@ app.engine('html', nunjucks.render);
 
 app.use(express.static(path.join(__dirname, '/public')));
 
+app.use(routes);
 // app.get('/public/stylesheets/style.css')
 
-app.listen(3000, () => {console.log('Listening on 3000')});
+models.User.sync({})
+.then( () => {return models.Page.sync({})})
+.then( () => {app.listen(3000, () => {console.log('Listening on 3000')});})
+.catch(console.error);
+
+// app.listen(3000, () => {console.log('Listening on 3000')});
